@@ -1,4 +1,11 @@
 // ============================================
+// CONFIGURAÇÃO DO BACKEND
+// ============================================
+
+const BACKEND_URL =
+    "https://atualiza-new-5346.onrender.com";
+
+// ============================================
 // ELEMENTOS
 // ============================================
 
@@ -169,7 +176,7 @@ btnIniciar.addEventListener(
 
             const resposta =
                 await fetch(
-                    "/api/processar",
+                    `${BACKEND_URL}/api/processar`,
                     {
                         method: "POST",
                         body: formData
@@ -217,7 +224,7 @@ btnCancelar.addEventListener(
         try {
 
             await fetch(
-                "/api/cancelar",
+                `${BACKEND_URL}/api/cancelar`,
                 {
                     method: "POST"
                 }
@@ -264,7 +271,7 @@ btnConfirmar.addEventListener(
 
             const resposta =
                 await fetch(
-                    "/api/confirmar",
+                    `${BACKEND_URL}/api/confirmar`,
                     {
                         method: "POST",
                         headers: {
@@ -337,7 +344,9 @@ btnLimparLogs.addEventListener(
 // ============================================
 
 const eventos =
-    new EventSource("/api/events");
+    new EventSource(
+        `${BACKEND_URL}/api/events`
+    );
 
 eventos.onopen = () => {
 
