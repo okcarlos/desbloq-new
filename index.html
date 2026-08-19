@@ -6,540 +6,467 @@
     <meta charset="UTF-8">
 
     <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Atualiza New Corban</title>
+    <title>Atualização de Benefícios</title>
 
-    <!-- CSS -->
     <link
-        rel="stylesheet"
-        href="./style.css"
+            rel="stylesheet"
+            href="style.css"
     >
 
 </head>
 
 <body>
 
-    <!-- ========================================= -->
-    <!-- CABEÇALHO -->
-    <!-- ========================================= -->
+<div class="app">
+
+    <!-- ================================= -->
+    <!-- HEADER -->
+    <!-- ================================= -->
 
     <header class="header">
 
-        <div class="header-content">
+        <div>
 
-            <div>
+            <h1>Atualização de Benefícios</h1>
 
-                <h1>
-                    Atualiza New Corban
-                </h1>
+            <p>
+                New Corban + IN100
+            </p>
 
-                <p>
-                    Consulta e atualização de benefícios via IN100
-                </p>
+        </div>
 
-            </div>
-
-
-            <div
+        <div
                 id="statusSistema"
                 class="status-indicator parado"
-            >
+        >
 
-                <span class="status-dot"></span>
+            <span class="status-dot"></span>
 
-                <span id="statusTexto">
-                    Parado
-                </span>
-
-            </div>
+            <span id="statusTexto">
+                Parado
+            </span>
 
         </div>
 
     </header>
 
 
-    <!-- ========================================= -->
-    <!-- CONTEÚDO -->
-    <!-- ========================================= -->
+    <!-- ================================= -->
+    <!-- CONTROLE -->
+    <!-- ================================= -->
 
-    <main class="container">
+    <section class="controle card">
 
+        <div class="arquivo-area">
 
-        <!-- ===================================== -->
-        <!-- CONTROLE -->
-        <!-- ===================================== -->
-
-        <section class="controle card">
-
-            <!-- ARQUIVO -->
-
-            <div class="arquivo-area">
-
-                <label
+            <label
                     for="arquivo"
                     class="arquivo-label"
-                >
+            >
 
-                    <span class="arquivo-icon">
-                        📁
-                    </span>
+                <span class="arquivo-icon">
+                    📁
+                </span>
 
-                    <span>
+                <span>
 
-                        <strong>
-                            Selecionar planilha
-                        </strong>
+                    <strong>
+                        Selecionar planilha
+                    </strong>
 
-                        <small id="nomeArquivo">
-                            Nenhum arquivo selecionado
-                        </small>
+                    <small id="nomeArquivo">
+                        Nenhum arquivo selecionado
+                    </small>
 
-                    </span>
+                </span>
 
-                </label>
+            </label>
 
-
-                <input
+            <input
                     type="file"
                     id="arquivo"
                     accept=".xlsx,.xls"
-                >
+            >
 
-            </div>
-
-
-            <!-- ================================= -->
-            <!-- NEW CORBAN -->
-            <!-- ================================= -->
-
-            <div class="corban-area">
-
-                <label for="corban">
-                    New Corban
-                </label>
+        </div>
 
 
-                <select id="corban">
+        <!-- ================================= -->
+        <!-- SELEÇÃO NEW CORBAN -->
+        <!-- ================================= -->
 
-                    <option value="">
-                        Selecione...
-                    </option>
+        <div class="newcorban-area">
 
-                    <option value="IEV">
-                        IEV
-                    </option>
+            <label
+                    for="newCorban"
+                    class="newcorban-label"
+            >
+                New Corban
+            </label>
 
-                    <option value="CS">
-                        CS
-                    </option>
+            <select
+                    id="newCorban"
+                    class="newcorban-select"
+            >
 
-                </select>
+                <option value="">
+                    Selecione...
+                </option>
 
-            </div>
+                <option value="IEV">
+                    IEV
+                </option>
+
+                <option value="CS">
+                    CS
+                </option>
+
+            </select>
+
+        </div>
 
 
-            <!-- ================================= -->
-            <!-- BOTÕES -->
-            <!-- ================================= -->
+        <div class="acoes">
 
-            <div class="acoes">
-
-                <button
+            <button
                     id="btnIniciar"
                     class="btn btn-primary"
-                    type="button"
-                >
-                    ▶ Iniciar análise
-                </button>
+            >
+                ▶ Iniciar análise
+            </button>
 
-
-                <button
+            <button
                     id="btnCancelar"
                     class="btn btn-danger"
-                    type="button"
                     disabled
-                >
-                    ■ Parar
-                </button>
-
-            </div>
-
-        </section>
-
-
-        <!-- ===================================== -->
-        <!-- RESUMO -->
-        <!-- ===================================== -->
-
-        <section class="resumo">
-
-            <div class="card estatistica">
-
-                <span class="estatistica-titulo">
-                    Total
-                </span>
-
-                <strong id="total">
-                    0
-                </strong>
-
-            </div>
-
-
-            <div class="card estatistica">
-
-                <span class="estatistica-titulo">
-                    Processados
-                </span>
-
-                <strong id="processados">
-                    0
-                </strong>
-
-            </div>
-
-
-            <div class="card estatistica">
-
-                <span class="estatistica-titulo">
-                    Desbloqueados
-                </span>
-
-                <strong
-                    id="desbloqueados"
-                    class="texto-verde"
-                >
-                    0
-                </strong>
-
-            </div>
-
-
-            <div class="card estatistica">
-
-                <span class="estatistica-titulo">
-                    Bloqueados
-                </span>
-
-                <strong
-                    id="bloqueados"
-                    class="texto-vermelho"
-                >
-                    0
-                </strong>
-
-            </div>
-
-
-            <div class="card estatistica">
-
-                <span class="estatistica-titulo">
-                    Erros
-                </span>
-
-                <strong
-                    id="erros"
-                    class="texto-amarelo"
-                >
-                    0
-                </strong>
-
-            </div>
-
-        </section>
-
-
-        <!-- ===================================== -->
-        <!-- PROGRESSO -->
-        <!-- ===================================== -->
-
-        <section class="card progresso-card">
-
-            <div class="progresso-header">
-
-                <strong>
-                    Progresso
-                </strong>
-
-                <span id="porcentagem">
-                    0%
-                </span>
-
-            </div>
-
-
-            <div class="barra-container">
-
-                <div
-                    id="barraProgresso"
-                    class="barra-progresso"
-                    style="width: 0%"
-                ></div>
-
-            </div>
-
-
-            <div
-                id="etapa"
-                class="etapa"
             >
-                Aguardando início...
-            </div>
+                ■ Parar
+            </button>
 
-        </section>
+        </div>
 
-
-        <!-- ===================================== -->
-        <!-- TABELA -->
-        <!-- ===================================== -->
-
-        <section class="card tabela-card">
-
-            <div class="card-header">
-
-                <div>
-
-                    <h2>
-                        Atualizações
-                    </h2>
-
-                    <p>
-                        Benefícios analisados pela IN100
-                    </p>
-
-                </div>
-
-            </div>
+    </section>
 
 
-            <div class="tabela-wrapper">
+    <!-- ================================= -->
+    <!-- CARDS -->
+    <!-- ================================= -->
 
-                <table>
+    <section class="cards">
 
-                    <thead>
+        <div class="metric card">
 
-                        <tr>
+            <span class="metric-label">
+                Benefícios
+            </span>
 
-                            <th>
-                                CPF
-                            </th>
+            <strong id="total">
+                0
+            </strong>
 
-                            <th>
-                                Benefício
-                            </th>
+        </div>
 
-                            <th>
-                                Status atual
-                            </th>
+        <div class="metric card">
 
-                            <th>
-                                IN100
-                            </th>
+            <span class="metric-label">
+                Processados
+            </span>
 
-                            <th>
-                                Novo status
-                            </th>
+            <strong id="processados">
+                0
+            </strong>
 
-                            <th>
-                                Resultado
-                            </th>
+        </div>
 
-                        </tr>
+        <div class="metric card">
 
-                    </thead>
+            <span class="metric-label">
+                Desbloqueados
+            </span>
 
+            <strong
+                    id="desbloqueados"
+                    class="verde"
+            >
+                0
+            </strong>
 
-                    <tbody id="tabela">
+        </div>
 
-                        <tr class="vazio">
+        <div class="metric card">
 
-                            <td colspan="6">
-                                Nenhum benefício processado.
-                            </td>
+            <span class="metric-label">
+                Bloqueados
+            </span>
 
-                        </tr>
+            <strong
+                    id="bloqueados"
+                    class="vermelho"
+            >
+                0
+            </strong>
 
-                    </tbody>
+        </div>
 
-                </table>
+        <div class="metric card">
 
-            </div>
+            <span class="metric-label">
+                Erros
+            </span>
 
-        </section>
+            <strong
+                    id="erros"
+                    class="amarelo"
+            >
+                0
+            </strong>
 
+        </div>
 
-        <!-- ===================================== -->
-        <!-- LOGS -->
-        <!-- ===================================== -->
-
-        <section class="card logs-card">
-
-            <div class="card-header">
-
-                <div>
-
-                    <h2>
-                        Logs
-                    </h2>
-
-                    <p>
-                        Acompanhamento do processamento
-                    </p>
-
-                </div>
+    </section>
 
 
-                <button
-                    id="btnLimparLogs"
-                    class="btn btn-secondary"
-                    type="button"
-                >
-                    Limpar logs
-                </button>
+    <!-- ================================= -->
+    <!-- PROGRESSO -->
+    <!-- ================================= -->
 
-            </div>
+    <section class="card progresso-area">
 
+        <div class="progresso-header">
+
+            <strong id="etapa">
+                Aguardando planilha
+            </strong>
+
+            <span id="porcentagem">
+                0%
+            </span>
+
+        </div>
+
+        <div class="barra">
 
             <div
-                id="logs"
-                class="logs"
+                    id="barraProgresso"
+                    class="barra-preenchida"
             ></div>
 
-        </section>
+        </div>
 
-    </main>
+    </section>
 
 
-    <!-- ========================================= -->
-    <!-- MODAL DE CONFIRMAÇÃO -->
-    <!-- ========================================= -->
+    <!-- ================================= -->
+    <!-- TABELA -->
+    <!-- ================================= -->
 
-    <div
-        id="modal"
-        class="modal-overlay escondido"
-    >
+    <section class="card tabela-area">
 
-        <div class="modal">
+        <div class="section-header">
 
-            <div class="modal-header">
+            <div>
 
                 <h2>
-                    Análise concluída
+                    Atualizações
                 </h2>
 
-            </div>
-
-
-            <div class="modal-body">
-
-                <p>
-                    A análise da planilha foi concluída.
-                </p>
-
-                <p>
-                    Confira o resumo antes de enviar as alterações para o New Corban.
-                </p>
-
-
-                <div class="modal-resumo">
-
-
-                    <div class="modal-item">
-
-                        <span>
-                            Desbloqueados
-                        </span>
-
-                        <strong
-                            id="modalDesbloqueados"
-                            class="texto-verde"
-                        >
-                            0
-                        </strong>
-
-                    </div>
-
-
-                    <div class="modal-item">
-
-                        <span>
-                            Bloqueados
-                        </span>
-
-                        <strong
-                            id="modalBloqueados"
-                            class="texto-vermelho"
-                        >
-                            0
-                        </strong>
-
-                    </div>
-
-
-                    <div class="modal-item">
-
-                        <span>
-                            Erros
-                        </span>
-
-                        <strong
-                            id="modalErros"
-                            class="texto-amarelo"
-                        >
-                            0
-                        </strong>
-
-                    </div>
-
-                </div>
-
-
-                <p class="modal-aviso">
-
-                    ⚠️ Ao confirmar, as alterações serão enviadas para o New Corban.
-
-                </p>
-
-            </div>
-
-
-            <div class="modal-acoes">
-
-                <button
-                    id="btnFecharModal"
-                    class="btn btn-secondary"
-                    type="button"
-                >
-                    Cancelar
-                </button>
-
-
-                <button
-                    id="btnConfirmar"
-                    class="btn btn-primary"
-                    type="button"
-                >
-                    ✓ Confirmar atualizações
-                </button>
+                <span>
+                    Resultado da análise IN100
+                </span>
 
             </div>
 
         </div>
 
+        <div class="tabela-container">
+
+            <table>
+
+                <thead>
+
+                <tr>
+
+                    <th>CPF</th>
+
+                    <th>Benefício</th>
+
+                    <th>Status atual</th>
+
+                    <th>IN100</th>
+
+                    <th>Novo status</th>
+
+                    <th>Resultado</th>
+
+                </tr>
+
+                </thead>
+
+                <tbody id="tabela">
+
+                <tr class="vazio">
+
+                    <td colspan="6">
+
+                        Nenhum benefício processado.
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================================= -->
+    <!-- LOG -->
+    <!-- ================================= -->
+
+    <section class="card logs-area">
+
+        <div class="section-header">
+
+            <div>
+
+                <h2>
+                    Atividade
+                </h2>
+
+                <span>
+                    Informações resumidas da execução
+                </span>
+
+            </div>
+
+            <button
+                    id="btnLimparLogs"
+                    class="btn btn-secondary"
+            >
+                Limpar
+            </button>
+
+        </div>
+
+        <div
+                id="logs"
+                class="logs"
+        ></div>
+
+    </section>
+
+</div>
+
+
+<!-- ================================= -->
+<!-- MODAL DE CONFIRMAÇÃO -->
+<!-- ================================= -->
+
+<div
+        id="modal"
+        class="modal-overlay escondido"
+>
+
+    <div class="modal">
+
+        <div class="modal-icon">
+            ⚠️
+        </div>
+
+        <h2>
+            Confirmar atualização
+        </h2>
+
+        <p>
+            A análise foi concluída.
+        </p>
+
+        <div class="modal-resumo">
+
+            <div>
+
+                <span>
+                    Desbloqueados
+                </span>
+
+                <strong
+                        id="modalDesbloqueados"
+                        class="verde"
+                >
+                    0
+                </strong>
+
+            </div>
+
+            <div>
+
+                <span>
+                    Bloqueados
+                </span>
+
+                <strong
+                        id="modalBloqueados"
+                        class="vermelho"
+                >
+                    0
+                </strong>
+
+            </div>
+
+            <div>
+
+                <span>
+                    Erros
+                </span>
+
+                <strong
+                        id="modalErros"
+                        class="amarelo"
+                >
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+        <p class="aviso">
+            Ao confirmar, os PUTs serão enviados
+            para o New Corban selecionado.
+        </p>
+
+        <div class="modal-acoes">
+
+            <button
+                    id="btnFecharModal"
+                    class="btn btn-secondary"
+            >
+                Cancelar
+            </button>
+
+            <button
+                    id="btnConfirmar"
+                    class="btn btn-primary"
+            >
+                Confirmar e atualizar
+            </button>
+
+        </div>
+
     </div>
 
+</div>
 
-    <!-- ========================================= -->
-    <!-- JAVASCRIPT -->
-    <!-- ========================================= -->
 
-    <script
-        src="./app.js"
-        defer
-    ></script>
+<script src="app.js"></script>
 
 </body>
 
