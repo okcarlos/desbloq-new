@@ -16,7 +16,7 @@ const nomeArquivo =
     document.getElementById("nomeArquivo");
 
 const newCorban =
-    document.getElementById("newCorban");
+    document.getElementById("Corban");
 
 const btnIniciar =
     document.getElementById("btnIniciar");
@@ -168,7 +168,7 @@ btnIniciar.addEventListener(
         // ========================================
 
         formData.append(
-            "newCorban",
+            "Corban",
             newCorban.value
         );
 
