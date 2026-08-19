@@ -187,16 +187,15 @@ btnIniciar.addEventListener(
         // FORMDATA
         // ====================================
 
-        const formData =
-            new FormData();
+        const formData = new FormData();
 
         formData.append(
             "arquivo",
             arquivo
         );
-
+        
         formData.append(
-            "newCorban",
+            "corban",
             corbanSelecionado
         );
 
