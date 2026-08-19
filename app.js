@@ -5,6 +5,7 @@
 const BACKEND_URL =
     "https://atualiza-new-5346.onrender.com";
 
+
 // ============================================
 // ELEMENTOS
 // ============================================
@@ -16,7 +17,7 @@ const nomeArquivo =
     document.getElementById("nomeArquivo");
 
 const newCorban =
-    document.getElementById("Corban");
+    document.getElementById("corban");
 
 const btnIniciar =
     document.getElementById("btnIniciar");
@@ -128,11 +129,15 @@ btnIniciar.addEventListener(
             return;
         }
 
+
         // ========================================
         // VALIDAR NEW CORBAN
         // ========================================
 
-        if (!newCorban || !newCorban.value) {
+        if (
+            !newCorban ||
+            !newCorban.value
+        ) {
 
             adicionarLog(
                 "Selecione qual New Corban será utilizado.",
@@ -142,10 +147,14 @@ btnIniciar.addEventListener(
             return;
         }
 
+
         limparTela();
 
-        btnIniciar.disabled = true;
-        btnCancelar.disabled = false;
+        btnIniciar.disabled =
+            true;
+
+        btnCancelar.disabled =
+            false;
 
         alterarStatus(
             "executando",
@@ -153,7 +162,12 @@ btnIniciar.addEventListener(
         );
 
         etapa.textContent =
-            "Analisando planilha...";
+            "Enviando planilha...";
+
+
+        // ========================================
+        // FORM DATA
+        // ========================================
 
         const formData =
             new FormData();
@@ -163,14 +177,15 @@ btnIniciar.addEventListener(
             arquivo
         );
 
-        // ========================================
-        // ENVIA A ESCOLHA DO NEW CORBAN
-        // ========================================
-
         formData.append(
-            "Corban",
+            "corban",
             newCorban.value
         );
+
+
+        // ========================================
+        // ENVIAR PARA O BACKEND
+        // ========================================
 
         try {
 
@@ -186,6 +201,7 @@ btnIniciar.addEventListener(
             const dados =
                 await resposta.json();
 
+
             if (!resposta.ok) {
 
                 throw new Error(
@@ -194,6 +210,13 @@ btnIniciar.addEventListener(
                 );
             }
 
+
+            adicionarLog(
+                dados.mensagem ||
+                "Processamento iniciado.",
+                "success"
+            );
+
         } catch (error) {
 
             adicionarLog(
@@ -201,8 +224,11 @@ btnIniciar.addEventListener(
                 "error"
             );
 
-            btnIniciar.disabled = false;
-            btnCancelar.disabled = true;
+            btnIniciar.disabled =
+                false;
+
+            btnCancelar.disabled =
+                true;
 
             alterarStatus(
                 "erro",
@@ -223,17 +249,29 @@ btnCancelar.addEventListener(
 
         try {
 
-            await fetch(
-                `${BACKEND_URL}/api/cancelar`,
-                {
-                    method: "POST"
-                }
-            );
+            const resposta =
+                await fetch(
+                    `${BACKEND_URL}/api/cancelar`,
+                    {
+                        method: "POST"
+                    }
+                );
+
+            const dados =
+                await resposta.json();
+
+            if (!resposta.ok) {
+
+                throw new Error(
+                    dados.erro ||
+                    "Erro ao cancelar."
+                );
+            }
 
         } catch (error) {
 
             adicionarLog(
-                "Erro ao cancelar.",
+                error.message,
                 "error"
             );
         }
@@ -260,12 +298,16 @@ btnConfirmar.addEventListener(
     "click",
     async () => {
 
-        btnConfirmar.disabled = true;
-        btnFecharModal.disabled = true;
+        btnConfirmar.disabled =
+            true;
+
+        btnFecharModal.disabled =
+            true;
 
         modal.classList.add(
             "escondido"
         );
+
 
         try {
 
@@ -288,6 +330,7 @@ btnConfirmar.addEventListener(
             const dados =
                 await resposta.json();
 
+
             if (!resposta.ok) {
 
                 throw new Error(
@@ -295,6 +338,7 @@ btnConfirmar.addEventListener(
                     "Erro ao confirmar."
                 );
             }
+
 
             alterarStatus(
                 "executando",
@@ -348,6 +392,7 @@ const eventos =
         `${BACKEND_URL}/api/events`
     );
 
+
 eventos.onopen = () => {
 
     console.log(
@@ -355,12 +400,14 @@ eventos.onopen = () => {
     );
 };
 
+
 eventos.onerror = () => {
 
     console.warn(
         "Conexão SSE perdida. O navegador tentará reconectar."
     );
 };
+
 
 eventos.onmessage =
     event => {
@@ -377,6 +424,7 @@ eventos.onmessage =
             );
 
         } catch {
+
             // Ignora evento inválido
         }
     };
@@ -401,6 +449,7 @@ function processarEvento(
         return;
     }
 
+
     if (
         dados.tipo === "log"
     ) {
@@ -412,6 +461,7 @@ function processarEvento(
 
         return;
     }
+
 
     if (
         dados.tipo === "progresso_put"
@@ -463,7 +513,8 @@ function atualizarInterface(
             dados.processados || 0
         );
 
-    let porcentagemAtual = 0;
+    let porcentagemAtual =
+        0;
 
     if (
         totalItens > 0
@@ -530,6 +581,9 @@ function atualizarInterface(
         "atualizando"
     ) {
 
+        etapa.textContent =
+            "Enviando atualizações...";
+
         alterarStatus(
             "executando",
             "Atualizando"
@@ -584,6 +638,9 @@ function atualizarInterface(
         "erro"
     ) {
 
+        etapa.textContent =
+            "Ocorreu um erro.";
+
         alterarStatus(
             "erro",
             "Erro"
@@ -607,7 +664,7 @@ function atualizarInterface(
 
 
     // ========================================
-    // ERROS DETALHADOS
+    // ERROS
     // ========================================
 
     renderizarErros(
@@ -654,6 +711,7 @@ function renderizarTabela(
         return;
     }
 
+
     tabela.innerHTML =
         itens.map(
             item => {
@@ -663,14 +721,18 @@ function renderizarTabela(
                         item.statusAtual
                     );
 
+
                 const novoStatus =
                     item.novoStatus === 1
+
                         ? `<span class="badge badge-verde">
                             DESBLOQUEADO
                            </span>`
+
                         : `<span class="badge badge-vermelho">
                             BLOQUEADO
                            </span>`;
+
 
                 const in100 =
                     item.blockType ===
@@ -681,32 +743,37 @@ function renderizarTabela(
                            </span>`
 
                         : item.blockType
+
                             ? `<span class="badge badge-vermelho">
                                 ${escapeHTML(
-                                item.blockType
-                            )}
+                                    item.blockType
+                                )}
                                </span>`
 
                             : `<span class="badge badge-amarelo">
                                 -
                                </span>`;
 
+
                 const resultado =
                     resultadoBadge(
                         item.resultado
                     );
 
+
                 return `
                     <tr>
 
                         <td>
-                            ${formatarCPF(item.cpf)}
+                            ${formatarCPF(
+                                item.cpf
+                            )}
                         </td>
 
                         <td>
                             ${escapeHTML(
-                    item.beneficio
-                )}
+                                item.beneficio
+                            )}
                         </td>
 
                         <td>
@@ -751,6 +818,7 @@ function statusBadge(
         `;
     }
 
+
     if (
         status === 3
     ) {
@@ -762,11 +830,14 @@ function statusBadge(
         `;
     }
 
+
     return `
         <span class="badge badge-amarelo">
             ${escapeHTML(
-        String(status ?? "-")
-    )}
+                String(
+                    status ?? "-"
+                )
+            )}
         </span>
     `;
 }
@@ -781,7 +852,8 @@ function resultadoBadge(
 ) {
 
     if (
-        resultado === "SUCESSO"
+        resultado ===
+        "SUCESSO"
     ) {
 
         return `
@@ -790,6 +862,7 @@ function resultadoBadge(
             </span>
         `;
     }
+
 
     if (
         resultado ===
@@ -803,8 +876,10 @@ function resultadoBadge(
         `;
     }
 
+
     if (
-        resultado === "ERRO"
+        resultado ===
+        "ERRO"
     ) {
 
         return `
@@ -813,6 +888,7 @@ function resultadoBadge(
             </span>
         `;
     }
+
 
     return `
         <span class="badge badge-amarelo">
@@ -839,11 +915,13 @@ function mostrarModal(
     modalErros.textContent =
         dados.erros ?? 0;
 
+
     btnConfirmar.disabled =
         false;
 
     btnFecharModal.disabled =
         false;
+
 
     modal.classList.remove(
         "escondido"
@@ -868,10 +946,13 @@ function adicionarLog(
     div.className =
         `log log-${tipo}`;
 
+
     const hora =
-        new Date().toLocaleTimeString(
-            "pt-BR"
-        );
+        new Date()
+            .toLocaleTimeString(
+                "pt-BR"
+            );
+
 
     div.innerHTML = `
         <span class="log-hora">
@@ -879,13 +960,17 @@ function adicionarLog(
         </span>
 
         <span>
-            ${escapeHTML(mensagem)}
+            ${escapeHTML(
+                mensagem
+            )}
         </span>
     `;
+
 
     logs.appendChild(
         div
     );
+
 
     logs.scrollTop =
         logs.scrollHeight;
@@ -900,17 +985,19 @@ function renderizarErros(
     lista
 ) {
 
-    if (!Array.isArray(lista)) {
+    if (
+        !Array.isArray(lista)
+    ) {
+
         return;
     }
 
-    /*
-     * Evita recriar os erros toda vez que
-     * chegar um evento SSE.
-     */
 
     const errosAtuais =
-        JSON.stringify(lista);
+        JSON.stringify(
+            lista
+        );
+
 
     if (
         logs.dataset.erros ===
@@ -920,19 +1007,16 @@ function renderizarErros(
         return;
     }
 
+
     logs.dataset.erros =
         errosAtuais;
 
-
-    /*
-     * Remove somente os erros detalhados
-     * adicionados anteriormente.
-     */
 
     const errosExistentes =
         logs.querySelectorAll(
             ".log-erro-detalhado"
         );
+
 
     errosExistentes.forEach(
         elemento =>
@@ -953,9 +1037,10 @@ function renderizarErros(
 
 
             const hora =
-                new Date().toLocaleTimeString(
-                    "pt-BR"
-                );
+                new Date()
+                    .toLocaleTimeString(
+                        "pt-BR"
+                    );
 
 
             const cpf =
@@ -966,9 +1051,11 @@ function renderizarErros(
 
             const beneficio =
                 erro.beneficio
+
                     ? escapeHTML(
                         erro.beneficio
                     )
+
                     : "-";
 
 
@@ -1032,6 +1119,7 @@ function limparTela() {
     barraProgresso.style.width =
         "0%";
 
+
     tabela.innerHTML = `
         <tr class="vazio">
             <td colspan="6">
@@ -1039,6 +1127,7 @@ function limparTela() {
             </td>
         </tr>
     `;
+
 
     logs.innerHTML =
         "";
@@ -1056,8 +1145,14 @@ function formatarCPF(
 ) {
 
     const valor =
-        String(cpf ?? "")
-            .replace(/\D/g, "");
+        String(
+            cpf ?? ""
+        )
+            .replace(
+                /\D/g,
+                ""
+            );
+
 
     if (
         valor.length !== 11
@@ -1067,6 +1162,7 @@ function formatarCPF(
             valor
         );
     }
+
 
     return (
         valor.substring(0, 3) +
@@ -1088,7 +1184,9 @@ function escapeHTML(
     valor
 ) {
 
-    return String(valor ?? "")
+    return String(
+        valor ?? ""
+    )
         .replaceAll(
             "&",
             "&amp;"
