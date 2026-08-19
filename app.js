@@ -5,7 +5,6 @@
 const BACKEND_URL =
     "https://atualiza-new-5346.onrender.com";
 
-
 // ============================================
 // ELEMENTOS
 // ============================================
@@ -17,7 +16,7 @@ const nomeArquivo =
     document.getElementById("nomeArquivo");
 
 const newCorban =
-    document.getElementById("corban");
+    document.getElementById("newCorban");
 
 const btnIniciar =
     document.getElementById("btnIniciar");
@@ -130,25 +129,39 @@ btnIniciar.addEventListener(
         }
 
 
-        // ========================================
+        // ====================================
         // VALIDAR NEW CORBAN
-        // ========================================
+        // ====================================
+
+        const corbanSelecionado =
+            newCorban.value;
 
         if (
-            !newCorban ||
-            !newCorban.value
+            ![
+                "IEV",
+                "CS"
+            ].includes(
+                corbanSelecionado
+            )
         ) {
 
             adicionarLog(
-                "Selecione qual New Corban será utilizado.",
+                "Selecione qual New Corban será utilizado: IEV ou CS.",
                 "warning"
             );
+
+            newCorban.focus();
 
             return;
         }
 
 
+        // ====================================
+        // LIMPAR TELA
+        // ====================================
+
         limparTela();
+
 
         btnIniciar.disabled =
             true;
@@ -156,18 +169,23 @@ btnIniciar.addEventListener(
         btnCancelar.disabled =
             false;
 
+        newCorban.disabled =
+            true;
+
+
         alterarStatus(
             "executando",
-            "Processando"
+            `Processando — ${corbanSelecionado}`
         );
 
+
         etapa.textContent =
-            "Enviando planilha...";
+            `Analisando planilha no New Corban ${corbanSelecionado}...`;
 
 
-        // ========================================
-        // FORM DATA
-        // ========================================
+        // ====================================
+        // FORMDATA
+        // ====================================
 
         const formData =
             new FormData();
@@ -178,14 +196,14 @@ btnIniciar.addEventListener(
         );
 
         formData.append(
-            "corban",
-            newCorban.value
+            "newCorban",
+            corbanSelecionado
         );
 
 
-        // ========================================
-        // ENVIAR PARA O BACKEND
-        // ========================================
+        // ====================================
+        // ENVIAR
+        // ====================================
 
         try {
 
@@ -193,10 +211,15 @@ btnIniciar.addEventListener(
                 await fetch(
                     `${BACKEND_URL}/api/processar`,
                     {
-                        method: "POST",
-                        body: formData
+
+                        method:
+                            "POST",
+
+                        body:
+                        formData
                     }
                 );
+
 
             const dados =
                 await resposta.json();
@@ -212,10 +235,10 @@ btnIniciar.addEventListener(
 
 
             adicionarLog(
-                dados.mensagem ||
-                "Processamento iniciado.",
-                "success"
+                `Processamento iniciado no New Corban ${corbanSelecionado}.`,
+                "info"
             );
+
 
         } catch (error) {
 
@@ -229,6 +252,9 @@ btnIniciar.addEventListener(
 
             btnCancelar.disabled =
                 true;
+
+            newCorban.disabled =
+                false;
 
             alterarStatus(
                 "erro",
@@ -249,29 +275,18 @@ btnCancelar.addEventListener(
 
         try {
 
-            const resposta =
-                await fetch(
-                    `${BACKEND_URL}/api/cancelar`,
-                    {
-                        method: "POST"
-                    }
-                );
-
-            const dados =
-                await resposta.json();
-
-            if (!resposta.ok) {
-
-                throw new Error(
-                    dados.erro ||
-                    "Erro ao cancelar."
-                );
-            }
+            await fetch(
+                `${BACKEND_URL}/api/cancelar`,
+                {
+                    method:
+                        "POST"
+                }
+            );
 
         } catch (error) {
 
             adicionarLog(
-                error.message,
+                "Erro ao cancelar.",
                 "error"
             );
         }
@@ -315,17 +330,24 @@ btnConfirmar.addEventListener(
                 await fetch(
                     `${BACKEND_URL}/api/confirmar`,
                     {
-                        method: "POST",
+
+                        method:
+                            "POST",
+
                         headers: {
+
                             "Content-Type":
                                 "application/json"
                         },
+
                         body:
                             JSON.stringify({
-                                confirmar: true
+                                confirmar:
+                                    true
                             })
                     }
                 );
+
 
             const dados =
                 await resposta.json();
@@ -342,14 +364,17 @@ btnConfirmar.addEventListener(
 
             alterarStatus(
                 "executando",
-                "Atualizando"
+                `Atualizando — ${dados.newCorban || newCorban.value}`
             );
 
+
             etapa.textContent =
-                "Enviando atualizações...";
+                `Enviando atualizações para ${dados.newCorban || newCorban.value}...`;
+
 
             btnCancelar.disabled =
                 false;
+
 
         } catch (error) {
 
@@ -363,6 +388,10 @@ btnConfirmar.addEventListener(
 
             btnFecharModal.disabled =
                 false;
+
+            modal.classList.remove(
+                "escondido"
+            );
         }
     }
 );
@@ -377,8 +406,6 @@ btnLimparLogs.addEventListener(
     () => {
 
         logs.innerHTML = "";
-
-        delete logs.dataset.erros;
     }
 );
 
@@ -424,7 +451,6 @@ eventos.onmessage =
             );
 
         } catch {
-
             // Ignora evento inválido
         }
     };
@@ -439,7 +465,8 @@ function processarEvento(
 ) {
 
     if (
-        dados.tipo === "estado"
+        dados.tipo ===
+        "estado"
     ) {
 
         atualizarInterface(
@@ -451,7 +478,8 @@ function processarEvento(
 
 
     if (
-        dados.tipo === "log"
+        dados.tipo ===
+        "log"
     ) {
 
         adicionarLog(
@@ -464,7 +492,8 @@ function processarEvento(
 
 
     if (
-        dados.tipo === "progresso_put"
+        dados.tipo ===
+        "progresso_put"
     ) {
 
         etapa.textContent =
@@ -500,6 +529,25 @@ function atualizarInterface(
 
 
     // ========================================
+    // NEW CORBAN
+    // ========================================
+
+    if (
+        dados.newCorban
+    ) {
+
+        newCorban.value =
+            dados.newCorban;
+
+        newCorban.disabled =
+            dados.executando ||
+            dados.etapa ===
+            "aguardando_confirmacao";
+
+    }
+
+
+    // ========================================
     // PROGRESSO
     // ========================================
 
@@ -513,8 +561,7 @@ function atualizarInterface(
             dados.processados || 0
         );
 
-    let porcentagemAtual =
-        0;
+    let porcentagemAtual = 0;
 
     if (
         totalItens > 0
@@ -546,12 +593,13 @@ function atualizarInterface(
     ) {
 
         etapa.textContent =
-            `Consultando ${processadosItens}/${totalItens}`;
+            `Consultando ${processadosItens}/${totalItens} — New Corban ${dados.newCorban || "-"}`;
 
         alterarStatus(
             "executando",
-            "Processando"
+            `Processando — ${dados.newCorban || ""}`
         );
+
 
     } else if (
         dados.etapa ===
@@ -559,12 +607,13 @@ function atualizarInterface(
     ) {
 
         etapa.textContent =
-            "Análise concluída — aguardando confirmação";
+            `Análise concluída — ${dados.newCorban || "-"} — aguardando confirmação`;
 
         alterarStatus(
             "pronto",
-            "Aguardando confirmação"
+            `Aguardando confirmação — ${dados.newCorban || ""}`
         );
+
 
         btnIniciar.disabled =
             false;
@@ -572,28 +621,35 @@ function atualizarInterface(
         btnCancelar.disabled =
             true;
 
+        newCorban.disabled =
+            false;
+
+
         mostrarModal(
             dados
         );
+
 
     } else if (
         dados.etapa ===
         "atualizando"
     ) {
 
-        etapa.textContent =
-            "Enviando atualizações...";
-
         alterarStatus(
             "executando",
-            "Atualizando"
+            `Atualizando — ${dados.newCorban || ""}`
         );
+
 
         btnIniciar.disabled =
             true;
 
         btnCancelar.disabled =
             false;
+
+        newCorban.disabled =
+            true;
+
 
     } else if (
         dados.etapa ===
@@ -601,18 +657,23 @@ function atualizarInterface(
     ) {
 
         etapa.textContent =
-            "Lote finalizado";
+            `Lote finalizado — ${dados.newCorban || "-"}`;
 
         alterarStatus(
             "pronto",
             "Finalizado"
         );
 
+
         btnIniciar.disabled =
             false;
 
         btnCancelar.disabled =
             true;
+
+        newCorban.disabled =
+            false;
+
 
     } else if (
         dados.etapa ===
@@ -627,30 +688,36 @@ function atualizarInterface(
             "Cancelado"
         );
 
+
         btnIniciar.disabled =
             false;
 
         btnCancelar.disabled =
             true;
+
+        newCorban.disabled =
+            false;
+
 
     } else if (
         dados.etapa ===
         "erro"
     ) {
 
-        etapa.textContent =
-            "Ocorreu um erro.";
-
         alterarStatus(
             "erro",
             "Erro"
         );
+
 
         btnIniciar.disabled =
             false;
 
         btnCancelar.disabled =
             true;
+
+        newCorban.disabled =
+            false;
     }
 
 
@@ -698,7 +765,9 @@ function renderizarTabela(
     itens
 ) {
 
-    if (!itens.length) {
+    if (
+        !itens.length
+    ) {
 
         tabela.innerHTML = `
             <tr class="vazio">
@@ -725,34 +794,44 @@ function renderizarTabela(
                 const novoStatus =
                     item.novoStatus === 1
 
-                        ? `<span class="badge badge-verde">
-                            DESBLOQUEADO
-                           </span>`
+                        ? `
+                            <span class="badge badge-verde">
+                                DESBLOQUEADO
+                            </span>
+                          `
 
-                        : `<span class="badge badge-vermelho">
-                            BLOQUEADO
-                           </span>`;
+                        : `
+                            <span class="badge badge-vermelho">
+                                BLOQUEADO
+                            </span>
+                          `;
 
 
                 const in100 =
                     item.blockType ===
                     "not_blocked"
 
-                        ? `<span class="badge badge-verde">
-                            not_blocked
-                           </span>`
+                        ? `
+                            <span class="badge badge-verde">
+                                not_blocked
+                            </span>
+                          `
 
                         : item.blockType
 
-                            ? `<span class="badge badge-vermelho">
-                                ${escapeHTML(
-                                    item.blockType
-                                )}
-                               </span>`
+                            ? `
+                                <span class="badge badge-vermelho">
+                                    ${escapeHTML(
+                                item.blockType
+                            )}
+                                </span>
+                              `
 
-                            : `<span class="badge badge-amarelo">
-                                -
-                               </span>`;
+                            : `
+                                <span class="badge badge-amarelo">
+                                    -
+                                </span>
+                              `;
 
 
                 const resultado =
@@ -766,14 +845,14 @@ function renderizarTabela(
 
                         <td>
                             ${formatarCPF(
-                                item.cpf
-                            )}
+                    item.cpf
+                )}
                         </td>
 
                         <td>
                             ${escapeHTML(
-                                item.beneficio
-                            )}
+                    item.beneficio
+                )}
                         </td>
 
                         <td>
@@ -834,10 +913,10 @@ function statusBadge(
     return `
         <span class="badge badge-amarelo">
             ${escapeHTML(
-                String(
-                    status ?? "-"
-                )
-            )}
+        String(
+            status ?? "-"
+        )
+    )}
         </span>
     `;
 }
@@ -943,15 +1022,15 @@ function adicionarLog(
             "div"
         );
 
+
     div.className =
         `log log-${tipo}`;
 
 
     const hora =
-        new Date()
-            .toLocaleTimeString(
-                "pt-BR"
-            );
+        new Date().toLocaleTimeString(
+            "pt-BR"
+        );
 
 
     div.innerHTML = `
@@ -961,8 +1040,8 @@ function adicionarLog(
 
         <span>
             ${escapeHTML(
-                mensagem
-            )}
+        mensagem
+    )}
         </span>
     `;
 
@@ -986,7 +1065,9 @@ function renderizarErros(
 ) {
 
     if (
-        !Array.isArray(lista)
+        !Array.isArray(
+            lista
+        )
     ) {
 
         return;
@@ -1032,15 +1113,15 @@ function renderizarErros(
                     "div"
                 );
 
+
             div.className =
                 "log log-error log-erro-detalhado";
 
 
             const hora =
-                new Date()
-                    .toLocaleTimeString(
-                        "pt-BR"
-                    );
+                new Date().toLocaleTimeString(
+                    "pt-BR"
+                );
 
 
             const cpf =
@@ -1113,8 +1194,10 @@ function limparTela() {
     erros.textContent =
         "0";
 
+
     porcentagem.textContent =
         "0%";
+
 
     barraProgresso.style.width =
         "0%";
@@ -1131,6 +1214,7 @@ function limparTela() {
 
     logs.innerHTML =
         "";
+
 
     delete logs.dataset.erros;
 }
